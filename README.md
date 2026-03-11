@@ -1,4 +1,4 @@
-# SRILANKAPRAYERTIME
+[extract_mannar_structured.py](https://github.com/user-attachments/files/25899188/extract_mannar_structured.py)# SRILANKAPRAYERTIME
 SRILANKAPRAYERTIME
 [index.html](https://github.com/user-attachments/files/25899032/index.html)
 <!DOCTYPE html>
@@ -16,7 +16,42 @@ SRILANKAPRAYERTIME
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">[Uploading extract_mannar_struc[extract_ratnapura_structured.py](https://github.com/user-attachments/files/25899189/extract_ratnapura_structured.py)[extract_kurunegala_structured.py](https://github.com/user-attachments/files/25899250/extract_kurunegala_structured.py)
+[extract_kandy_structured.py](https://github.com/user-attachments/files/25899249/extract_kandy_structured.py)
+[extract_kandy.py](https://github.com/user-attachments/files/25899248/extract_kandy.py)
+[extract_jaffna_structured.py](https://github.com/user-attachments/files/25899225/extract_jaffna_structured.py)
+[extract_hambantota_structured.py](https://github.com/user-attachments/files/25899224/extract_hambantota_structured.py)
+[extract_batticaloa_structured.py](https://github.com/user-attachments/files/25899223/extract_batticaloa_structured.py)
+[extract_badulla_structured.py](https://github.com/user-attachments/files/25899222/extract_badulla_structured.py)
+[extract_anuradhapura_structured.py](https://github.com/user-attachments/files/25899221/extract_anuradhapura_structured.py)
+[debug_times.js](https://github.com/user-attachments/files/25899219/debug_times.js)
+[batticaloa_prayer_data.js](https://github.com/user-attachments/files/25899218/batticaloa_prayer_data.js)
+[badulla_prayer_data.js](https://github.com/user-attachments/files/25899217/badulla_prayer_data.js)
+[anuradhapura_prayer_data.js](https://github.com/user-attachments/files/25899215/anuradhapura_prayer_data.js)
+[adhan.js](https://github.com/user-attachments/files/25899214/adhan.js)
+[zone03_prayer_data.js](https://github.com/user-attachments/files/25899213/zone03_prayer_data.js)
+[trincomalee_prayer_data.js](https://github.com/user-attachments/files/25899212/trincomalee_prayer_data.js)
+[sw.js](https://github.com/user-attachments/files/25899211/sw.js)
+[style.css](https://github.com/user-attachments/files/25899210/style.css)
+[script.js](https://github.com/user-attachments/files/25899209/script.js)
+[ratnapura_prayer_data.js](https://github.com/user-attachments/files/25899208/ratnapura_prayer_data.js)
+[prayer_static_data.js](https://github.com/user-attachments/files/25899207/prayer_static_data.js)
+[prayer_data.txt](https://github.com/user-attachments/files/25899206/prayer_data.txt)
+[prayer_app_mobile.html](https://github.com/user-attachments/files/25899205/prayer_app_mobile.html)
+[parse_data.js](https://github.com/user-attachments/files/25899204/parse_data.js)
+[mannar_prayer_data.js](https://github.com/user-attachments/files/25899202/mannar_prayer_data.js)
+[manifest.json](https://github.com/user-attachments/files/25899201/manifest.json)
+[kurunegala_prayer_data.js](https://github.com/user-attachments/files/25899200/kurunegala_prayer_data.js)
+[kandy_prayer_data.js](https://github.com/user-attachments/files/25899198/kandy_prayer_data.js)
+[kandy_data.txt](https://github.com/user-attachments/files/25899197/kandy_data.txt)
+[jaffna_prayer_data.js](https://github.com/user-attachments/files/25899196/jaffna_prayer_data.js)
+[index.html](https://github.com/user-attachments/files/25899195/index.html)
+[hambantota_prayer_data.js](https://github.com/user-attachments/files/25899194/hambantota_prayer_data.js)
+[galle_matara_prayer_data.js](https://github.com/user-attachments/files/25899193/galle_matara_prayer_data.js)
+[extract_zone03_structured.py](https://github.com/user-attachments/files/25899192/extract_zone03_structured.py)
+[extract_trincomalee_structured.py](https://github.com/user-attachments/files/25899191/extract_trincomalee_structured.py)
+tured.py…]()
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
 
