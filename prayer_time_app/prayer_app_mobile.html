@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ACJU Prayer Times</title>
+    <meta name="description" content="ACJU Colombo, Gampaha & Kalutara District Prayer Times">
+    <meta name="theme-color" content="#0f172a">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* CSS Content from style.css */
+        :root {
+            --primary-color: #10b981;
+            /* Emerald-500 */
+            --secondary-color: #f59e0b;
+            /* Amber-500 */
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --font-family: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+            animation: moveBackground 20s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes moveBackground {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+        }
+
+        /* App Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: 8px;
+            padding: 0 10px;
+        }
+
+        .district-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            background: linear-gradient(to right, #4ade80, #facc15);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-shadow: none;
+            background: none;
+            -webkit-text-fill-color: var(--text-secondary);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Header / Countdown */
+        .hero-section {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .date-display {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .next-prayer-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .next-prayer-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .countdown-timer {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            margin-top: 8px;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Prayer Cards */
+        .prayer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .prayer-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .prayer-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .prayer-card.active {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .prayer-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .prayer-time {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        /* Selection Bar */
+        .selection-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .select-group label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+
+        /* Location & Settings */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            margin-bottom: -10px;
+        }
+
+        .location-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 24px;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        /* Hijri Date Display */
+        .hijri-date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hijri-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hijri-icon {
+            font-size: 1.1em;
+        }
+
+        .hijri-text {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Azan Alert Overlay */
+        .azan-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+
+        .azan-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .azan-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #facc15;
+            /* Amber-400 */
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 0 0 30px rgba(250, 204, 21, 0.5);
+            animation: pulseText 2s infinite;
+        }
+
+        @keyframes pulseText {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <h1 class="district-title">ACJU Colombo, Gampaha & Kalutara <br> <span class="subtitle">District Prayer
+                    Times</span></h1>
+        </header>
+
+        <!-- Selection Bar -->
+        <div class="selection-bar">
+            <div class="select-group">
+                <label for="month-select">Month</label>
+                <select id="month-select" class="form-select">
+                    <option value="" disabled selected>Select Month</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="date-select">Date</label>
+                <select id="date-select" class="form-select" disabled>
+                    <option value="" disabled selected>Select Date</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="district-select">District</label>
+                <select id="district-select" class="form-select" disabled>
+                    <option value="" disabled selected>Select District</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" style="display: none;">
+            <div class="hero-section">
+                <div id="date-display" class="date-display">--</div>
+                <div id="hijri-display" class="hijri-date-container"></div>
+                <div class="next-prayer-label">Next Prayer</div>
+                <h1 class="next-prayer-name" id="next-prayer-name">--</h1>
+                <div class="countdown-timer" id="countdown">--:--:--</div>
+            </div>
+
+            <div class="prayer-list" id="prayer-list">
+                <div class="prayer-card date-card">
+                    <span class="prayer-name">Date</span>
+                    <span class="prayer-time" id="list-date-display">--</span>
+                </div>
+                <!-- Items -->
+                <div class="prayer-card">
+                    <span class="prayer-name">Fajr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Sunrise</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Luhr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Asr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Magrib</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Isha</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Azan Alert Overlay -->
+    <div id="azan-alert" class="azan-overlay">
+        <div class="azan-text">Ready for Salaha<br>Prepare for Victory</div>
+    </div>
+
+    <script>
+        (function (global, factory) {
+            typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+                typeof define === 'function' && define.amd ? define(['exports'], factory) :
+                    (global = global || self, factory(global.adhan = {}));
+        }(this, (function (exports) {
+            'use strict';
+
+            var Coordinates = /** @class */ (function () {
+                function Coordinates(latitude, longitude) {
+                    this.latitude = latitude;
+                    this.longitude = longitude;
+                }
+                return Coordinates;
+            }());
+
+            var round = Math.round;
+            var floor = Math.floor;
+            var ceil = Math.ceil;
+            var abs = Math.abs;
+            var sin = Math.sin;
+            var cos = Math.cos;
+            var tan = Math.tan;
+            var acos = Math.acos;
+            var asin = Math.asin;
+            var atan = Math.atan;
+            var atan2 = Math.atan2;
+            var sqrt = Math.sqrt;
+            var degrees = function (radians) {
+                return (radians * 180.0) / Math.PI;
+            };
+            var radians = function (degrees) {
+                return (degrees * Math.PI) / 180.0;
+            };
+            var unwindAngle = function (angle) {
+                var normalize = angle % 360.0;
+                if (normalize < 0) {
+                    return 360.0 + normalize;
+                }
+                return normalize;
+            };
+            var normalizeToScale = function (num, max) {
+                return num - max * floor(num / max);
+            };
+            var timeComponents = function (time) {
+                return {
+                    hours: floor(time),
+                    minutes: floor((time - floor(time)) * 60)
+                };
+            };
+            var Astronomical = {
+                approximateTransit: function (L, theta0, alpha_o) {
+                    var Lsw = -1 * radians(L);
+                    return (alpha_o - theta0 - Lsw) / (2 * Math.PI);
+                },
+                correctedTransit: function (m0, L, theta0, alpha_o, n, dAlpha) {
+                    var Lsw = -1 * radians(L);
+                    var theta = unwindAngle(theta0 + 360.985647 * m0);
+                    var alpha = unwindAngle(alpha_o + n * m0 + dAlpha * m0); // approx: alpha_o + n * m0
+                    var H = unwindAngle(theta - Lsw - alpha);
+                    var dH = H;
+                    if (H > 180.0) {
+                        dH = H - 360.0;
+                    }
+                    return m0 - dH / 360.0;
+                },
+                correctedHourAngle: function (m0, h0, coordinates, afterTransit, delta, dDelta, theta0, alpha_o, n, dAlpha) {
+                    var L = coordinates.latitude;
+                    var Lsw = -1 * radians(coordinates.longitude);
+                    var theta = unwindAngle(theta0 + 360.985647 * m0);
+                    var alpha = unwindAngle(alpha_o + n * m0 + dAlpha * m0); // approx: alpha_o + n * m0
+                    var H = unwindAngle(theta - Lsw - alpha);
+                    var dH = H - h0;
+                    if (!afterTransit && dH > 180.0) {
+                        dH = dH - 360.0;
+                    }
+                    else if (afterTransit && dH < -180.0) {
+                        dH = dH + 360.0;
+                    }
+                    return m0 - dH / 360.0;
+                },
+                interpolate: function (y2, y1, y3, n) {
+                    var a = y2 - y1;
+                    var b = y3 - y2;
+                    var c = b - a;
+                    return y2 + (n / 2) * (a + b + n * c);
+                },
+                interpolateAngles: function (y2, y1, y3, n) {
+                    var a = unwindAngle(y2 - y1);
+                    var b = unwindAngle(y3 - y2);
+                    var c = b - a;
+                    return y2 + (n / 2) * (a + b + n * c);
+                },
+                meanSiderealTime: function (julianDay) {
+                    var T = (julianDay - 2451545.0) / 36525.0;
+                    return 280.46061837 + 360.98564736629 * (julianDay - 2451545.0) + T * T * 0.000387933 - T * T * T / 38710000;
+                },
+                apparentSiderealTime: function (julianDay, nutationLongitude, epsilon) {
+                    var theta0 = this.meanSiderealTime(julianDay);
+                    return unwindAngle(theta0 + nutationLongitude * cos(epsilon));
+                },
+                solarCoordinates: function (julianDay) {
+                    var T = (julianDay - 2451545.0) / 36525.0;
+                    var L0 = unwindAngle(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+                    var M = unwindAngle(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+                    var e = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
+                    var C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * sin(radians(M)) + (0.019993 - 0.000101 * T) * sin(radians(2 * M)) + 0.000289 * sin(radians(3 * M));
+                    var theta = L0 + C; // true longitude
+                    var nu = M + C; // true anomaly
+                    var R = (1.000001018 * (1 - e * e)) / (1 + e * cos(radians(nu)));
+                    var O = 125.04 - 1934.136 * T;
+                    var app_L0 = theta - 0.00569 - 0.00478 * sin(radians(O));
+                    var epsilon0 = 23 + (26 + 21.448 / 60) / 60 - (46.815 / 3600) * T - (0.00059 / 3600) * T * T + (0.001813 / 3600) * T * T * T;
+                    var epsilon = epsilon0 + 0.00256 * cos(radians(O));
+                    var rightAscension = degrees(atan2(cos(radians(epsilon)) * sin(radians(app_L0)), cos(radians(app_L0))));
+                    var declination = degrees(asin(sin(radians(epsilon)) * sin(radians(app_L0))));
+                    return {
+                        declination: declination,
+                        rightAscension: unwindAngle(rightAscension),
+                        apparentSiderealTime: this.apparentSiderealTime(julianDay, 0.00478 * sin(radians(O)), radians(epsilon))
+                    };
+                },
+                altitudeOfSun: function (coordinates, val, julianDay) {
+                    var solar = this.solarCoordinates(julianDay);
+                    var declination = radians(solar.declination);
+                    var rightAscension = radians(solar.rightAscension);
+                    var L = radians(coordinates.latitude);
+                    var Lsw = radians(-1 * coordinates.longitude);
+                    var theta0 = radians(solar.apparentSiderealTime);
+                    var H = unwindAngle(degrees(theta0 - Lsw - rightAscension));
+                    var h = radians(H);
+                    var term1 = sin(L) * sin(declination);
+                    var term2 = cos(L) * cos(declination) * cos(h);
+                    return degrees(asin(term1 + term2));
+                },
+                julianDay: function (year, month, day, hours) {
+                    if (hours === void 0) { hours = 0; }
+                    var Y = year;
+                    var M = month;
+                    var D = day;
+                    if (M <= 2) {
+                        Y -= 1;
+                        M += 12;
+                    }
+                    var A = floor(Y / 100);
+                    var B = 2 - A + floor(A / 4);
+                    return floor(365.25 * (Y + 4716)) + floor(30.6001 * (M + 1)) + D + B - 1524.5 + hours / 24;
+                },
+                julianCentury: function (val) {
+                    return (val - 2451545.0) / 36525.0;
+                },
+                seasonAdjustedMorningTwilight: function (latitude, day, year, sunrise) {
+                    var a = 75 + ((28.65 / 55.0) * abs(latitude));
+                    var b = 75 + ((19.44 / 55.0) * abs(latitude));
+                    var c = 75 + ((32.74 / 55.0) * abs(latitude));
+                    var d = 75 + ((48.10 / 55.0) * abs(latitude));
+                    var adjustment = 0;
+                    var dyy = this.daysSinceSolstice(day, year, latitude);
+                    if (dyy < 91) {
+                        adjustment = a + (b - a) / 91.0 * dyy;
+                    }
+                    else if (dyy < 137) {
+                        adjustment = b + (c - b) / 46.0 * (dyy - 91);
+                    }
+                    else if (dyy < 183) {
+                        adjustment = c + (d - c) / 46.0 * (dyy - 137);
+                    }
+                    else if (dyy < 229) {
+                        adjustment = d + (c - d) / 46.0 * (dyy - 183);
+                    }
+                    else if (dyy < 275) {
+                        adjustment = c + (b - c) / 46.0 * (dyy - 229);
+                    }
+                    else {
+                        adjustment = b + (a - b) / 91.0 * (dyy - 275);
+                    }
+                    return sunrise + (-adjustment * 60.0);
+                },
+                seasonAdjustedEveningTwilight: function (latitude, day, year, sunset, shawoq) {
+                    var a = 75 + ((25.60 / 55.0) * abs(latitude));
+                    var b = 75 + ((2.050 / 55.0) * abs(latitude));
+                    var c = 75 - ((9.210 / 55.0) * abs(latitude));
+                    var d = 75 + ((6.140 / 55.0) * abs(latitude));
+                    var adjustment = 0;
+                    var dyy = this.daysSinceSolstice(day, year, latitude);
+                    if (dyy < 91) {
+                        adjustment = a + (b - a) / 91.0 * dyy;
+                    }
+                    else if (dyy < 137) {
+                        adjustment = b + (c - b) / 46.0 * (dyy - 91);
+                    }
+                    else if (dyy < 183) {
+                        adjustment = c + (d - c) / 46.0 * (dyy - 137);
+                    }
+                    else if (dyy < 229) {
+                        adjustment = d + (c - d) / 46.0 * (dyy - 183);
+                    }
+                    else if (dyy < 275) {
+                        adjustment = c + (b - c) / 46.0 * (dyy - 229);
+                    }
+                    else {
+                        adjustment = b + (a - b) / 91.0 * (dyy - 275);
+                    }
+                    if (shawoq === true) {
+                        adjustment = 0;
+                    }
+                    return sunset + (adjustment * 60.0);
+                },
+                daysSinceSolstice: function (dayOfYear, year, latitude) {
+                    var daysSinceSolistice = 0;
+                    var northernOffset = 10;
+                    var southernOffset = 192; // 172;
+                    var daysInYear = this.isLeapYear(year) ? 366 : 365;
+                    if (latitude >= 0) {
+                        daysSinceSolistice = dayOfYear + northernOffset;
+                        if (daysSinceSolistice >= daysInYear) {
+                            daysSinceSolistice = daysSinceSolistice - daysInYear;
+                        }
+                    }
+                    else {
+                        daysSinceSolistice = dayOfYear + southernOffset;
+                        if (daysSinceSolistice >= daysInYear) {
+                            daysSinceSolistice = daysSinceSolistice - daysInYear;
+                        }
+                    }
+                    return daysSinceSolistice;
+                },
+                isLeapYear: function (year) {
+                    return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
+                }
+            };
+
+            var CalculationMethod = {
+                // Muslim World League
+                MuslimWorldLeague: function () {
+                    var params = new CalculationParameters(18, 17);
+                    params.method = "MuslimWorldLeague";
+                    return params;
+                },
+                // Egyptian General Authority of Survey
+                Egyptian: function () {
+                    var params = new CalculationParameters(19.5, 17.5);
+                    params.method = "Egyptian";
+                    return params;
+                },
+                // University of Islamic Sciences, Karachi
+                Karachi: function () {
+                    var params = new CalculationParameters(18, 18);
+                    params.method = "Karachi";
+                    return params;
+                },
+                // Umm al-Qura University, Makkah
+                UmmAlQura: function () {
+                    var params = new CalculationParameters(18.5, 90);
+                    params.method = "UmmAlQura";
+                    return params;
+                },
+                // The Gulf Region
+                Dubai: function () {
+                    var params = new CalculationParameters(18.2, 18.2);
+                    params.method = "Dubai";
+                    return params;
+                },
+                // Moonsighting Committee
+                MoonsightingCommittee: function () {
+                    var params = new CalculationParameters(18, 18);
+                    params.method = "MoonsightingCommittee";
+                    return params;
+                },
+                // North America (ISNA)
+                NorthAmerica: function () {
+                    var params = new CalculationParameters(15, 15);
+                    params.method = "NorthAmerica";
+                    return params;
+                },
+                // Kuwait
+                Kuwait: function () {
+                    var params = new CalculationParameters(18, 17.5);
+                    params.method = "Kuwait";
+                    return params;
+                },
+                // Qatar
+                Qatar: function () {
+                    var params = new CalculationParameters(18, 90);
+                    params.method = "Qatar";
+                    return params;
+                },
+                // Singapore
+                Singapore: function () {
+                    var params = new CalculationParameters(20, 18);
+                    params.method = "Singapore";
+                    return params;
+                },
+                // Institute of Geophysics, University of Tehran
+                Tehran: function () {
+                    var params = new CalculationParameters(17.7, 14);
+                    params.method = "Tehran";
+                    return params;
+                },
+                // Dianet
+                Turkey: function () {
+                    var params = new CalculationParameters(18, 17);
+                    params.method = "Turkey";
+                    return params;
+                },
+                // Other
+                Other: function () {
+                    var params = new CalculationParameters(0, 0);
+                    params.method = "Other";
+                    return params;
+                }
+            };
+            // Aliases
+            CalculationMethod.IslamicSocietyOfNorthAmerica = CalculationMethod.NorthAmerica;
+
+            var CalculationParameters = /** @class */ (function () {
+                function CalculationParameters(fajrAngle, ishaAngle, ishaInterval, method) {
+                    if (fajrAngle === void 0) { fajrAngle = null; }
+                    if (ishaAngle === void 0) { ishaAngle = null; }
+                    if (ishaInterval === void 0) { ishaInterval = 0; }
+                    if (method === void 0) { method = "Other"; }
+                    this.method = "Other";
+                    this.fajrAngle = fajrAngle || 18;
+                    this.ishaAngle = ishaAngle || 18;
+                    this.ishaInterval = ishaInterval;
+                    this.madhab = Madhab.Shafi;
+                    this.highLatitudeRule = HighLatitudeRule.MiddleOfTheNight;
+                    this.adjustments = { fajr: 0, sunrise: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 };
+                    this.method = method;
+                }
+                CalculationParameters.prototype.nightPortions = function () {
+                    switch (this.highLatitudeRule) {
+                        case HighLatitudeRule.MiddleOfTheNight:
+                            return { fajr: 1 / 2, isha: 1 / 2 };
+                        case HighLatitudeRule.SeventhOfTheNight:
+                            return { fajr: 1 / 7, isha: 1 / 7 };
+                        case HighLatitudeRule.TwilightAngle:
+                            return { fajr: this.fajrAngle / 60, isha: this.ishaAngle / 60 };
+                        default:
+                            throw new Error("Invalid high latitude rule");
+                    }
+                };
+                return CalculationParameters;
+            }());
+
+            var HighLatitudeRule;
+            (function (HighLatitudeRule) {
+                HighLatitudeRule[HighLatitudeRule["MiddleOfTheNight"] = 1] = "MiddleOfTheNight";
+                HighLatitudeRule[HighLatitudeRule["SeventhOfTheNight"] = 2] = "SeventhOfTheNight";
+                HighLatitudeRule[HighLatitudeRule["TwilightAngle"] = 3] = "TwilightAngle";
+            })(HighLatitudeRule || (HighLatitudeRule = {}));
+
+            var Madhab;
+            (function (Madhab) {
+                Madhab[Madhab["Shafi"] = 1] = "Shafi";
+                Madhab[Madhab["Hanafi"] = 2] = "Hanafi";
+            })(Madhab || (Madhab = {}));
+
+            var PolarCircleResolution;
+            (function (PolarCircleResolution) {
+                PolarCircleResolution[PolarCircleResolution["AqrabBalad"] = 1] = "AqrabBalad";
+                PolarCircleResolution[PolarCircleResolution["AqrabYaum"] = 2] = "AqrabYaum";
+                PolarCircleResolution[PolarCircleResolution["Unresolved"] = 3] = "Unresolved";
+            })(PolarCircleResolution || (PolarCircleResolution = {}));
+
+            var Prayer = {
+                Fajr: "fajr",
+                Sunrise: "sunrise",
+                Dhuhr: "dhuhr",
+                Asr: "asr",
+                Maghrib: "maghrib",
+                Isha: "isha",
+                None: "none"
+            };
+
+            var PrayerTimes = /** @class */ (function () {
+                function PrayerTimes(coordinates, date, calculationParameters) {
+                    this.coordinates = coordinates;
+                    this.date = date;
+                    this.calculationParameters = calculationParameters;
+                    this.fajr = new Date(NaN);
+                    this.sunrise = new Date(NaN);
+                    this.dhuhr = new Date(NaN);
+                    this.asr = new Date(NaN);
+                    this.maghrib = new Date(NaN);
+                    this.isha = new Date(NaN);
+                    var solar = Astronomical.solarCoordinates(this.julianDate(date));
+                    var transit = Astronomical.correctedTransit(solar.apparentSiderealTime, coordinates.longitude, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var sunrise = Astronomical.correctedHourAngle(transit, -0.8333, coordinates, false, solar.declination, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var sunset = Astronomical.correctedHourAngle(transit, -0.8333, coordinates, true, solar.declination, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var asr = this.afternoon(transit, 1, solar.declination, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var fajr = Astronomical.correctedHourAngle(transit, -1 * calculationParameters.fajrAngle, coordinates, false, solar.declination, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var isha = Astronomical.correctedHourAngle(transit, -1 * calculationParameters.ishaAngle, coordinates, true, solar.declination, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    var midnight = this.sunPosition(transit + 0.5, 0, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    this.fajr = this.dateFromJulian(fajr);
+                    this.sunrise = this.dateFromJulian(sunrise);
+                    this.dhuhr = this.dateFromJulian(transit + (this.coordinates.longitude / 360));
+                    this.asr = this.dateFromJulian(asr);
+                    this.maghrib = this.dateFromJulian(sunset);
+                    this.isha = this.dateFromJulian(isha);
+                    if (calculationParameters.ishaInterval > 0) {
+                        this.isha = new Date(this.maghrib.getTime() + calculationParameters.ishaInterval * 60000);
+                    }
+                    // Adjustments
+                    this.fajr = this.adjustTime(this.fajr, calculationParameters.adjustments.fajr);
+                    this.sunrise = this.adjustTime(this.sunrise, calculationParameters.adjustments.sunrise);
+                    this.dhuhr = this.adjustTime(this.dhuhr, calculationParameters.adjustments.dhuhr);
+                    this.asr = this.adjustTime(this.asr, calculationParameters.adjustments.asr);
+                    this.maghrib = this.adjustTime(this.maghrib, calculationParameters.adjustments.maghrib);
+                    this.isha = this.adjustTime(this.isha, calculationParameters.adjustments.isha);
+                }
+                PrayerTimes.prototype.dateFromJulian = function (julian) {
+                    var date = new Date(this.date);
+                    date.setUTCHours(0, 0, 0, 0);
+                    var hours = (julian + 0.5 - floor(julian + 0.5)) * 24;
+                    date.setUTCHours(floor(hours), floor((hours - floor(hours)) * 60), floor((hours * 60 - floor(hours * 60)) * 60));
+                    return date;
+                };
+                PrayerTimes.prototype.julianDate = function (date) {
+                    return Astronomical.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours() + date.getMinutes() / 60);
+                };
+                PrayerTimes.prototype.adjustTime = function (date, minutes) {
+                    return new Date(date.getTime() + minutes * 60000);
+                };
+                PrayerTimes.prototype.afternoon = function (transit, shadowLength, declination, dDelta, theta0, alpha_o, n, dAlpha) {
+                    var phi = radians(this.coordinates.latitude);
+                    var delta = radians(declination);
+                    var H = this.acot(shadowLength + tan(abs(phi - delta)));
+                    return Astronomical.correctedHourAngle(transit, degrees(H), this.coordinates, true, declination, dDelta, theta0, alpha_o, n, dAlpha);
+                };
+                PrayerTimes.prototype.sunPosition = function (julian, dDelta, theta0, alpha_o, n, dAlpha) {
+                    var solar = Astronomical.solarCoordinates(julian);
+                    var transit = Astronomical.correctedTransit(solar.apparentSiderealTime, this.coordinates.longitude, solar.apparentSiderealTime, solar.rightAscension, 1, 0);
+                    return transit;
+                };
+                PrayerTimes.prototype.acot = function (x) {
+                    return atan(1.0 / x);
+                };
+                PrayerTimes.prototype.timeForPrayer = function (prayer) {
+                    if (prayer === Prayer.Fajr) {
+                        return this.fajr;
+                    }
+                    else if (prayer === Prayer.Sunrise) {
+                        return this.sunrise;
+                    }
+                    else if (prayer === Prayer.Dhuhr) {
+                        return this.dhuhr;
+                    }
+                    else if (prayer === Prayer.Asr) {
+                        return this.asr;
+                    }
+                    else if (prayer === Prayer.Maghrib) {
+                        return this.maghrib;
+                    }
+                    else if (prayer === Prayer.Isha) {
+                        return this.isha;
+                    }
+                    else {
+                        return null;
+                    }
+                };
+                PrayerTimes.prototype.nextPrayer = function (date) {
+                    if (date === void 0) { date = new Date(); }
+                    if (date.getTime() < this.fajr.getTime()) {
+                        return Prayer.Fajr;
+                    }
+                    else if (date.getTime() < this.sunrise.getTime()) {
+                        return Prayer.Sunrise;
+                    }
+                    else if (date.getTime() < this.dhuhr.getTime()) {
+                        return Prayer.Dhuhr;
+                    }
+                    else if (date.getTime() < this.asr.getTime()) {
+                        return Prayer.Asr;
+                    }
+                    else if (date.getTime() < this.maghrib.getTime()) {
+                        return Prayer.Maghrib;
+                    }
+                    else if (date.getTime() < this.isha.getTime()) {
+                        return Prayer.Isha;
+                    }
+                    else {
+                        return Prayer.Fajr;
+                    }
+                };
+                return PrayerTimes;
+            }());
+
+            var SunnahTimes = /** @class */ (function () {
+                function SunnahTimes(prayerTimes) {
+                    var date = prayerTimes.date;
+                    var nextDay = new Date(date);
+                    nextDay.setDate(date.getDate() + 1);
+                    var nextDayPrayerTimes = new PrayerTimes(prayerTimes.coordinates, nextDay, prayerTimes.calculationParameters);
+                    var nightDuration = (nextDayPrayerTimes.fajr.getTime() - prayerTimes.maghrib.getTime()) / 1000;
+                    this.middleOfTheNight = new Date(prayerTimes.maghrib.getTime() + (nightDuration / 2) * 1000);
+                    this.lastThirdOfTheNight = new Date(prayerTimes.maghrib.getTime() + (nightDuration * (2 / 3)) * 1000);
+                }
+                return SunnahTimes;
+            }());
+
+            var Qibla = /** @class */ (function () {
+                function Qibla(coordinates) {
+                    this.direction = Qibla.calculate(coordinates);
+                }
+                Qibla.calculate = function (coordinates) {
+                    var makkah = new Coordinates(21.4225, 39.8262);
+                    var term1 = sin(radians(makkah.longitude) - radians(coordinates.longitude));
+                    var term2 = cos(radians(coordinates.latitude)) * tan(radians(makkah.latitude)) - sin(radians(coordinates.latitude)) * cos(radians(makkah.longitude) - radians(coordinates.longitude));
+                    var angle = degrees(atan2(term1, term2));
+                    return unwindAngle(angle);
+                };
+                return Qibla;
+            }());
+
+            exports.Coordinates = Coordinates;
+            exports.CalculationMethod = CalculationMethod;
+            exports.CalculationParameters = CalculationParameters;
+            exports.HighLatitudeRule = HighLatitudeRule;
+            exports.Madhab = Madhab;
+            exports.PolarCircleResolution = PolarCircleResolution;
+            exports.Prayer = Prayer;
+            exports.PrayerTimes = PrayerTimes;
+            exports.SunnahTimes = SunnahTimes;
+            exports.Qibla = Qibla;
+
+            Object.defineProperty(exports, '__esModule', { value: true });
+
+        })));
+    </script>
+
+    <!-- Placeholder for Static Data -->
+    <script>
+        const RAW_PRAYER_DATA = `
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Jan 4:54 AM 6:17 AM 12:12 PM 3:34 PM 6:05 PM 7:19 PM
+2-Jan 4:55 AM 6:18 AM 12:12 PM 3:34 PM 6:05 PM 7:19 PM
+3-Jan 4:55 AM 6:18 AM 12:12 PM 3:34 PM 6:06 PM 7:20 PM
+4-Jan 4:56 AM 6:18 AM 12:13 PM 3:35 PM 6:07 PM 7:20 PM
+5-Jan 4:56 AM 6:19 AM 12:13 PM 3:35 PM 6:07 PM 7:21 PM
+6-Jan 4:57 AM 6:19 AM 12:14 PM 3:36 PM 6:08 PM 7:21 PM
+7-Jan 4:57 AM 6:20 AM 12:14 PM 3:36 PM 6:08 PM 7:22 PM
+8-Jan 4:58 AM 6:20 AM 12:15 PM 3:37 PM 6:08 PM 7:22 PM
+9-Jan 4:58 AM 6:20 AM 12:15 PM 3:37 PM 6:09 PM 7:23 PM
+10-Jan 4:58 AM 6:21 AM 12:16 PM 3:38 PM 6:09 PM 7:23 PM
+11-Jan 4:59 AM 6:21 AM 12:16 PM 3:38 PM 6:10 PM 7:23 PM
+12-Jan 4:59 AM 6:21 AM 12:16 PM 3:38 PM 6:10 PM 7:24 PM
+13-Jan 5:00 AM 6:22 AM 12:17 PM 3:39 PM 6:11 PM 7:24 PM
+14-Jan 5:00 AM 6:22 AM 12:17 PM 3:39 PM 6:11 PM 7:25 PM
+15-Jan 5:00 AM 6:22 AM 12:17 PM 3:40 PM 6:12 PM 7:25 PM
+16-Jan 5:01 AM 6:22 AM 12:18 PM 3:40 PM 6:12 PM 7:25 PM
+17-Jan 5:01 AM 6:23 AM 12:18 PM 3:40 PM 6:13 PM 7:26 PM
+18-Jan 5:01 AM 6:23 AM 12:18 PM 3:41 PM 6:13 PM 7:26 PM
+19-Jan 5:02 AM 6:23 AM 12:19 PM 3:41 PM 6:13 PM 7:26 PM
+20-Jan 5:02 AM 6:23 AM 12:19 PM 3:41 PM 6:14 PM 7:26 PM
+21-Jan 5:03 AM 6:24 AM 12:19 PM 3:42 PM 6:14 PM 7:27 PM
+22-Jan 5:03 AM 6:24 AM 12:20 PM 3:42 PM 6:15 PM 7:27 PM
+23-Jan 5:03 AM 6:24 AM 12:20 PM 3:42 PM 6:15 PM 7:27 PM
+24-Jan 5:03 AM 6:24 AM 12:20 PM 3:43 PM 6:15 PM 7:28 PM
+25-Jan 5:04 AM 6:24 AM 12:20 PM 3:43 PM 6:16 PM 7:28 PM
+26-Jan 5:04 AM 6:25 AM 12:21 PM 3:43 PM 6:16 PM 7:28 PM
+27-Jan 5:04 AM 6:24 AM 12:21 PM 3:43 PM 6:16 PM 7:28 PM
+28-Jan 5:04 AM 6:25 AM 12:21 PM 3:43 PM 6:17 PM 7:28 PM
+29-Jan 5:05 AM 6:25 AM 12:21 PM 3:43 PM 6:17 PM 7:29 PM
+30-Jan 5:05 AM 6:25 AM 12:21 PM 3:43 PM 6:17 PM 7:29 PM
+31-Jan 5:05 AM 6:25 AM 12:22 PM 3:44 PM 6:18 PM 7:29 PM
+FEBRUARY
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Feb 5:10 AM 6:30 AM 12:26 PM 3:47 PM 6:20 PM 7:32 PM
+2-Feb 5:10 AM 6:30 AM 12:26 PM 3:47 PM 6:21 PM 7:32 PM
+3-Feb 5:10 AM 6:30 AM 12:26 PM 3:48 PM 6:21 PM 7:32 PM
+4-Feb 5:10 AM 6:30 AM 12:26 PM 3:48 PM 6:21 PM 7:32 PM
+5-Feb 5:10 AM 6:30 AM 12:26 PM 3:48 PM 6:21 PM 7:33 PM
+6-Feb 5:10 AM 6:29 AM 12:26 PM 3:48 PM 6:22 PM 7:33 PM
+7-Feb 5:10 AM 6:29 AM 12:26 PM 3:48 PM 6:22 PM 7:33 PM
+8-Feb 5:10 AM 6:29 AM 12:26 PM 3:48 PM 6:22 PM 7:33 PM
+9-Feb 5:10 AM 6:29 AM 12:26 PM 3:48 PM 6:22 PM 7:33 PM
+10-Feb 5:10 AM 6:29 AM 12:26 PM 3:48 PM 6:22 PM 7:33 PM
+11-Feb 5:10 AM 6:29 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+12-Feb 5:10 AM 6:29 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+13-Feb 5:10 AM 6:29 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+14-Feb 5:10 AM 6:28 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+15-Feb 5:10 AM 6:28 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+16-Feb 5:10 AM 6:28 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+17-Feb 5:10 AM 6:28 AM 12:26 PM 3:47 PM 6:23 PM 7:33 PM
+18-Feb 5:10 AM 6:28 AM 12:26 PM 3:47 PM 6:24 PM 7:33 PM
+19-Feb 5:09 AM 6:27 AM 12:26 PM 3:46 PM 6:24 PM 7:33 PM
+20-Feb 5:09 AM 6:27 AM 12:26 PM 3:46 PM 6:24 PM 7:33 PM
+21-Feb 5:09 AM 6:27 AM 12:26 PM 3:46 PM 6:24 PM 7:33 PM
+22-Feb 5:09 AM 6:27 AM 12:26 PM 3:46 PM 6:24 PM 7:33 PM
+23-Feb 5:09 AM 6:26 AM 12:26 PM 3:45 PM 6:24 PM 7:33 PM
+24-Feb 5:08 AM 6:26 AM 12:25 PM 3:45 PM 6:24 PM 7:33 PM
+25-Feb 5:08 AM 6:25 AM 12:25 PM 3:45 PM 6:24 PM 7:33 PM
+26-Feb 5:08 AM 6:25 AM 12:25 PM 3:44 PM 6:24 PM 7:33 PM
+27-Feb 5:08 AM 6:25 AM 12:25 PM 3:44 PM 6:24 PM 7:33 PM
+28-Feb 5:07 AM 6:25 AM 12:25 PM 3:44 PM 6:24 PM 7:33 PM
+29-Feb 5:07 AM 6:24 AM 12:25 PM 3:43 PM 6:24 PM 7:33 PM
+MARCH
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Mar 5:07 AM 6:24 AM 12:24 PM 3:43 PM 6:24 PM 7:33 PM
+2-Mar 5:06 AM 6:23 AM 12:24 PM 3:42 PM 6:24 PM 7:33 PM
+3-Mar 5:06 AM 6:23 AM 12:24 PM 3:42 PM 6:24 PM 7:33 PM
+4-Mar 5:06 AM 6:23 AM 12:24 PM 3:41 PM 6:24 PM 7:33 PM
+5-Mar 5:05 AM 6:22 AM 12:23 PM 3:41 PM 6:24 PM 7:33 PM
+6-Mar 5:05 AM 6:22 AM 12:23 PM 3:40 PM 6:24 PM 7:33 PM
+7-Mar 5:05 AM 6:21 AM 12:23 PM 3:40 PM 6:24 PM 7:32 PM
+8-Mar 5:04 AM 6:21 AM 12:23 PM 3:39 PM 6:24 PM 7:32 PM
+9-Mar 5:04 AM 6:20 AM 12:23 PM 3:39 PM 6:24 PM 7:32 PM
+10-Mar 5:03 AM 6:20 AM 12:22 PM 3:38 PM 6:24 PM 7:32 PM
+11-Mar 5:03 AM 6:20 AM 12:22 PM 3:37 PM 6:23 PM 7:32 PM
+12-Mar 5:02 AM 6:19 AM 12:22 PM 3:37 PM 6:23 PM 7:32 PM
+13-Mar 5:02 AM 6:19 AM 12:21 PM 3:36 PM 6:23 PM 7:32 PM
+14-Mar 5:02 AM 6:18 AM 12:21 PM 3:36 PM 6:23 PM 7:32 PM
+15-Mar 5:01 AM 6:18 AM 12:21 PM 3:35 PM 6:23 PM 7:32 PM
+16-Mar 5:01 AM 6:17 AM 12:21 PM 3:34 PM 6:23 PM 7:32 PM
+17-Mar 5:00 AM 6:17 AM 12:20 PM 3:34 PM 6:23 PM 7:31 PM
+18-Mar 5:00 AM 6:16 AM 12:20 PM 3:33 PM 6:23 PM 7:31 PM
+19-Mar 4:59 AM 6:16 AM 12:20 PM 3:32 PM 6:23 PM 7:31 PM
+20-Mar 4:59 AM 6:15 AM 12:19 PM 3:31 PM 6:23 PM 7:31 PM
+21-Mar 4:58 AM 6:15 AM 12:19 PM 3:31 PM 6:23 PM 7:31 PM
+22-Mar 4:58 AM 6:14 AM 12:19 PM 3:30 PM 6:22 PM 7:31 PM
+23-Mar 4:57 AM 6:14 AM 12:19 PM 3:29 PM 6:22 PM 7:31 PM
+24-Mar 4:57 AM 6:13 AM 12:18 PM 3:28 PM 6:22 PM 7:31 PM
+25-Mar 4:56 AM 6:13 AM 12:18 PM 3:28 PM 6:22 PM 7:31 PM
+26-Mar 4:56 AM 6:12 AM 12:18 PM 3:27 PM 6:22 PM 7:31 PM
+27-Mar 4:55 AM 6:12 AM 12:17 PM 3:26 PM 6:22 PM 7:31 PM
+28-Mar 4:55 AM 6:11 AM 12:17 PM 3:25 PM 6:22 PM 7:30 PM
+29-Mar 4:54 AM 6:11 AM 12:17 PM 3:24 PM 6:22 PM 7:30 PM
+30-Mar 4:53 AM 6:10 AM 12:16 PM 3:23 PM 6:22 PM 7:30 PM
+31-Mar 4:53 AM 6:10 AM 12:16 PM 3:22 PM 6:21 PM 7:30 PM
+APRIL
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Apr 4:52 AM 6:09 AM 12:16 PM 3:21 PM 6:21 PM 7:30 PM
+2-Apr 4:52 AM 6:09 AM 12:16 PM 3:20 PM 6:21 PM 7:30 PM
+3-Apr 4:51 AM 6:08 AM 12:15 PM 3:20 PM 6:21 PM 7:30 PM
+4-Apr 4:51 AM 6:08 AM 12:15 PM 3:19 PM 6:21 PM 7:30 PM
+5-Apr 4:50 AM 6:07 AM 12:15 PM 3:18 PM 6:21 PM 7:30 PM
+6-Apr 4:50 AM 6:07 AM 12:14 PM 3:17 PM 6:21 PM 7:30 PM
+7-Apr 4:49 AM 6:06 AM 12:14 PM 3:16 PM 6:21 PM 7:30 PM
+8-Apr 4:48 AM 6:06 AM 12:14 PM 3:15 PM 6:21 PM 7:30 PM
+9-Apr 4:48 AM 6:05 AM 12:14 PM 3:16 PM 6:21 PM 7:30 PM
+10-Apr 4:47 AM 6:05 AM 12:13 PM 3:16 PM 6:21 PM 7:30 PM
+11-Apr 4:47 AM 6:05 AM 12:13 PM 3:17 PM 6:20 PM 7:30 PM
+12-Apr 4:46 AM 6:04 AM 12:13 PM 3:18 PM 6:20 PM 7:30 PM
+13-Apr 4:46 AM 6:04 AM 12:12 PM 3:18 PM 6:20 PM 7:30 PM
+14-Apr 4:45 AM 6:03 AM 12:12 PM 3:19 PM 6:20 PM 7:30 PM
+15-Apr 4:45 AM 6:03 AM 12:12 PM 3:19 PM 6:20 PM 7:30 PM
+16-Apr 4:44 AM 6:02 AM 12:12 PM 3:19 PM 6:20 PM 7:30 PM
+17-Apr 4:44 AM 6:02 AM 12:12 PM 3:20 PM 6:20 PM 7:30 PM
+18-Apr 4:43 AM 6:02 AM 12:11 PM 3:20 PM 6:20 PM 7:30 PM
+19-Apr 4:43 AM 6:01 AM 12:11 PM 3:21 PM 6:20 PM 7:30 PM
+20-Apr 4:42 AM 6:01 AM 12:11 PM 3:21 PM 6:20 PM 7:30 PM
+21-Apr 4:42 AM 6:00 AM 12:11 PM 3:22 PM 6:20 PM 7:30 PM
+22-Apr 4:41 AM 6:00 AM 12:10 PM 3:22 PM 6:20 PM 7:30 PM
+23-Apr 4:41 AM 6:00 AM 12:10 PM 3:22 PM 6:20 PM 7:31 PM
+24-Apr 4:40 AM 5:59 AM 12:10 PM 3:23 PM 6:20 PM 7:31 PM
+25-Apr 4:40 AM 5:59 AM 12:10 PM 3:23 PM 6:20 PM 7:31 PM
+26-Apr 4:39 AM 5:59 AM 12:10 PM 3:24 PM 6:20 PM 7:31 PM
+27-Apr 4:39 AM 5:58 AM 12:10 PM 3:24 PM 6:20 PM 7:31 PM
+28-Apr 4:38 AM 5:58 AM 12:09 PM 3:24 PM 6:20 PM 7:31 PM
+29-Apr 4:38 AM 5:58 AM 12:09 PM 3:25 PM 6:20 PM 7:31 PM
+30-Apr 4:37 AM 5:57 AM 12:09 PM 3:25 PM 6:20 PM 7:31 PM
+MAY
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-May 4:37 AM 5:57 AM 12:09 PM 3:25 PM 6:20 PM 7:31 PM
+2-May 4:37 AM 5:57 AM 12:09 PM 3:26 PM 6:20 PM 7:32 PM
+3-May 4:36 AM 5:56 AM 12:09 PM 3:26 PM 6:20 PM 7:32 PM
+4-May 4:36 AM 5:56 AM 12:09 PM 3:26 PM 6:20 PM 7:32 PM
+5-May 4:35 AM 5:56 AM 12:09 PM 3:27 PM 6:20 PM 7:32 PM
+6-May 4:35 AM 5:56 AM 12:09 PM 3:27 PM 6:20 PM 7:32 PM
+7-May 4:35 AM 5:55 AM 12:08 PM 3:27 PM 6:20 PM 7:33 PM
+8-May 4:34 AM 5:55 AM 12:08 PM 3:28 PM 6:21 PM 7:33 PM
+9-May 4:34 AM 5:55 AM 12:08 PM 3:28 PM 6:21 PM 7:33 PM
+10-May 4:34 AM 5:55 AM 12:08 PM 3:28 PM 6:21 PM 7:33 PM
+11-May 4:33 AM 5:55 AM 12:08 PM 3:29 PM 6:21 PM 7:34 PM
+12-May 4:33 AM 5:55 AM 12:08 PM 3:29 PM 6:21 PM 7:34 PM
+13-May 4:33 AM 5:54 AM 12:08 PM 3:29 PM 6:21 PM 7:34 PM
+14-May 4:33 AM 5:54 AM 12:08 PM 3:30 PM 6:21 PM 7:34 PM
+15-May 4:32 AM 5:54 AM 12:08 PM 3:30 PM 6:21 PM 7:35 PM
+16-May 4:32 AM 5:54 AM 12:08 PM 3:31 PM 6:22 PM 7:35 PM
+17-May 4:32 AM 5:54 AM 12:08 PM 3:31 PM 6:22 PM 7:35 PM
+18-May 4:32 AM 5:54 AM 12:08 PM 3:31 PM 6:22 PM 7:35 PM
+19-May 4:31 AM 5:54 AM 12:08 PM 3:31 PM 6:22 PM 7:36 PM
+20-May 4:31 AM 5:54 AM 12:08 PM 3:32 PM 6:22 PM 7:36 PM
+21-May 4:31 AM 5:54 AM 12:09 PM 3:32 PM 6:22 PM 7:36 PM
+22-May 4:31 AM 5:54 AM 12:09 PM 3:32 PM 6:23 PM 7:36 PM
+23-May 4:31 AM 5:54 AM 12:09 PM 3:33 PM 6:23 PM 7:37 PM
+24-May 4:31 AM 5:53 AM 12:09 PM 3:33 PM 6:23 PM 7:37 PM
+25-May 4:30 AM 5:53 AM 12:09 PM 3:33 PM 6:23 PM 7:38 PM
+26-May 4:30 AM 5:53 AM 12:09 PM 3:34 PM 6:23 PM 7:38 PM
+27-May 4:30 AM 5:53 AM 12:09 PM 3:34 PM 6:24 PM 7:38 PM
+28-May 4:30 AM 5:54 AM 12:09 PM 3:34 PM 6:24 PM 7:39 PM
+29-May 4:30 AM 5:54 AM 12:09 PM 3:35 PM 6:24 PM 7:39 PM
+30-May 4:30 AM 5:54 AM 12:09 PM 3:35 PM 6:24 PM 7:39 PM
+31-May 4:30 AM 5:54 AM 12:10 PM 3:35 PM 6:25 PM 7:39 PM
+JUNE
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+Jun-1 4:30 AM 5:54 AM 12:10 PM 3:35 PM 6:25 PM 7:40 PM
+Jun-2 4:30 AM 5:54 AM 12:10 PM 3:36 PM 6:25 PM 7:40 PM
+Jun-3 4:30 AM 5:54 AM 12:10 PM 3:36 PM 6:25 PM 7:40 PM
+Jun-4 4:30 AM 5:54 AM 12:10 PM 3:37 PM 6:26 PM 7:41 PM
+Jun-5 4:30 AM 5:54 AM 12:10 PM 3:37 PM 6:26 PM 7:41 PM
+Jun-6 4:30 AM 5:54 AM 12:11 PM 3:37 PM 6:26 PM 7:41 PM
+Jun-7 4:30 AM 5:54 AM 12:11 PM 3:37 PM 6:26 PM 7:42 PM
+Jun-8 4:30 AM 5:54 AM 12:11 PM 3:38 PM 6:27 PM 7:42 PM
+Jun-9 4:30 AM 5:55 AM 12:11 PM 3:38 PM 6:27 PM 7:42 PM
+Jun-10 4:30 AM 5:55 AM 12:11 PM 3:38 PM 6:27 PM 7:43 PM
+Jun-11 4:30 AM 5:55 AM 12:12 PM 3:38 PM 6:27 PM 7:43 PM
+Jun-12 4:30 AM 5:55 AM 12:12 PM 3:39 PM 6:28 PM 7:43 PM
+Jun-13 4:30 AM 5:55 AM 12:12 PM 3:39 PM 6:28 PM 7:43 PM
+Jun-14 4:31 AM 5:55 AM 12:12 PM 3:39 PM 6:28 PM 7:44 PM
+Jun-15 4:31 AM 5:56 AM 12:12 PM 3:40 PM 6:28 PM 7:44 PM
+Jun-16 4:31 AM 5:56 AM 12:13 PM 3:40 PM 6:28 PM 7:44 PM
+Jun-17 4:31 AM 5:56 AM 12:13 PM 3:40 PM 6:29 PM 7:45 PM
+Jun-18 4:31 AM 5:56 AM 12:13 PM 3:40 PM 6:29 PM 7:45 PM
+Jun-19 4:31 AM 5:56 AM 12:13 PM 3:41 PM 6:29 PM 7:45 PM
+Jun-20 4:32 AM 5:57 AM 12:13 PM 3:41 PM 6:29 PM 7:45 PM
+Jun-21 4:32 AM 5:57 AM 12:14 PM 3:41 PM 6:30 PM 7:46 PM
+Jun-22 4:32 AM 5:57 AM 12:14 PM 3:41 PM 6:30 PM 7:46 PM
+Jun-23 4:32 AM 5:57 AM 12:14 PM 3:41 PM 6:30 PM 7:46 PM
+Jun-24 4:33 AM 5:57 AM 12:14 PM 3:42 PM 6:30 PM 7:46 PM
+Jun-25 4:33 AM 5:58 AM 12:15 PM 3:42 PM 6:31 PM 7:46 PM
+Jun-26 4:33 AM 5:58 AM 12:15 PM 3:42 PM 6:31 PM 7:47 PM
+Jun-27 4:33 AM 5:58 AM 12:15 PM 3:42 PM 6:31 PM 7:47 PM
+Jun-28 4:34 AM 5:58 AM 12:15 PM 3:42 PM 6:31 PM 7:47 PM
+Jun-29 4:34 AM 5:59 AM 12:15 PM 3:43 PM 6:31 PM 7:47 PM
+Jun-30 4:34 AM 5:59 AM 12:16 PM 3:43 PM 6:31 PM 7:47 PM
+JULY
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Jul 4:34 AM 5:59 AM 12:16 PM 3:43 PM 6:32 PM 7:47 PM
+2-Jul 4:35 AM 5:59 AM 12:16 PM 3:43 PM 6:32 PM 7:47 PM
+3-Jul 4:35 AM 5:59 AM 12:16 PM 3:43 PM 6:32 PM 7:47 PM
+4-Jul 4:35 AM 6:00 AM 12:16 PM 3:43 PM 6:32 PM 7:48 PM
+5-Jul 4:35 AM 6:00 AM 12:16 PM 3:43 PM 6:32 PM 7:48 PM
+6-Jul 4:36 AM 6:00 AM 12:17 PM 3:43 PM 6:32 PM 7:48 PM
+7-Jul 4:36 AM 6:00 AM 12:17 PM 3:43 PM 6:32 PM 7:48 PM
+8-Jul 4:36 AM 6:01 AM 12:17 PM 3:43 PM 6:32 PM 7:48 PM
+9-Jul 4:37 AM 6:01 AM 12:17 PM 3:43 PM 6:32 PM 7:48 PM
+10-Jul 4:37 AM 6:01 AM 12:17 PM 3:44 PM 6:33 PM 7:48 PM
+11-Jul 4:37 AM 6:01 AM 12:17 PM 3:43 PM 6:33 PM 7:48 PM
+12-Jul 4:37 AM 6:01 AM 12:18 PM 3:43 PM 6:33 PM 7:48 PM
+13-Jul 4:38 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:48 PM
+14-Jul 4:38 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:48 PM
+15-Jul 4:38 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+16-Jul 4:39 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+17-Jul 4:39 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+18-Jul 4:39 AM 6:02 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+19-Jul 4:40 AM 6:03 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+20-Jul 4:40 AM 6:03 AM 12:18 PM 3:43 PM 6:33 PM 7:47 PM
+21-Jul 4:40 AM 6:03 AM 12:18 PM 3:42 PM 6:32 PM 7:47 PM
+22-Jul 4:40 AM 6:03 AM 12:18 PM 3:42 PM 6:32 PM 7:46 PM
+23-Jul 4:41 AM 6:03 AM 12:18 PM 3:42 PM 6:32 PM 7:46 PM
+24-Jul 4:41 AM 6:04 AM 12:18 PM 3:42 PM 6:32 PM 7:46 PM
+25-Jul 4:41 AM 6:04 AM 12:18 PM 3:41 PM 6:32 PM 7:46 PM
+26-Jul 4:41 AM 6:04 AM 12:18 PM 3:41 PM 6:32 PM 7:46 PM
+27-Jul 4:42 AM 6:04 AM 12:18 PM 3:41 PM 6:32 PM 7:45 PM
+28-Jul 4:42 AM 6:04 AM 12:18 PM 3:41 PM 6:32 PM 7:45 PM
+29-Jul 4:42 AM 6:04 AM 12:18 PM 3:40 PM 6:32 PM 7:45 PM
+30-Jul 4:42 AM 6:04 AM 12:18 PM 3:40 PM 6:31 PM 7:44 PM
+31-Jul 4:43 AM 6:04 AM 12:18 PM 3:40 PM 6:31 PM 7:44 PM
+AUGUST
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Aug 4:43 AM 6:04 AM 12:18 PM 3:39 PM 6:31 PM 7:44 PM
+2-Aug 4:43 AM 6:04 AM 12:18 PM 3:39 PM 6:31 PM 7:44 PM
+3-Aug 4:43 AM 6:05 AM 12:18 PM 3:38 PM 6:31 PM 7:43 PM
+4-Aug 4:43 AM 6:05 AM 12:18 PM 3:38 PM 6:30 PM 7:43 PM
+5-Aug 4:44 AM 6:05 AM 12:18 PM 3:37 PM 6:30 PM 7:43 PM
+6-Aug 4:44 AM 6:05 AM 12:18 PM 3:37 PM 6:30 PM 7:42 PM
+7-Aug 4:44 AM 6:05 AM 12:18 PM 3:37 PM 6:30 PM 7:42 PM
+8-Aug 4:44 AM 6:05 AM 12:18 PM 3:36 PM 6:29 PM 7:41 PM
+9-Aug 4:44 AM 6:05 AM 12:17 PM 3:36 PM 6:29 PM 7:41 PM
+10-Aug 4:44 AM 6:05 AM 12:17 PM 3:35 PM 6:29 PM 7:41 PM
+11-Aug 4:45 AM 6:05 AM 12:17 PM 3:34 PM 6:28 PM 7:40 PM
+12-Aug 4:45 AM 6:05 AM 12:17 PM 3:34 PM 6:28 PM 7:40 PM
+13-Aug 4:45 AM 6:05 AM 12:17 PM 3:33 PM 6:28 PM 7:39 PM
+14-Aug 4:45 AM 6:05 AM 12:17 PM 3:32 PM 6:27 PM 7:39 PM
+15-Aug 4:45 AM 6:05 AM 12:16 PM 3:32 PM 6:27 PM 7:38 PM
+16-Aug 4:45 AM 6:05 AM 12:16 PM 3:31 PM 6:27 PM 7:38 PM
+17-Aug 4:45 AM 6:05 AM 12:16 PM 3:30 PM 6:26 PM 7:37 PM
+18-Aug 4:45 AM 6:05 AM 12:16 PM 3:30 PM 6:26 PM 7:37 PM
+19-Aug 4:45 AM 6:05 AM 12:16 PM 3:29 PM 6:26 PM 7:36 PM
+20-Aug 4:45 AM 6:05 AM 12:15 PM 3:28 PM 6:25 PM 7:36 PM
+21-Aug 4:45 AM 6:04 AM 12:15 PM 3:27 PM 6:25 PM 7:35 PM
+22-Aug 4:46 AM 6:04 AM 12:15 PM 3:26 PM 6:24 PM 7:35 PM
+23-Aug 4:46 AM 6:04 AM 12:15 PM 3:25 PM 6:24 PM 7:34 PM
+24-Aug 4:46 AM 6:04 AM 12:14 PM 3:25 PM 6:23 PM 7:34 PM
+25-Aug 4:46 AM 6:04 AM 12:14 PM 3:24 PM 6:23 PM 7:33 PM
+26-Aug 4:45 AM 6:04 AM 12:14 PM 3:23 PM 6:22 PM 7:32 PM
+27-Aug 4:46 AM 6:04 AM 12:13 PM 3:22 PM 6:22 PM 7:32 PM
+28-Aug 4:46 AM 6:04 AM 12:13 PM 3:21 PM 6:22 PM 7:31 PM
+29-Aug 4:46 AM 6:04 AM 12:13 PM 3:20 PM 6:21 PM 7:31 PM
+30-Aug 4:46 AM 6:04 AM 12:13 PM 3:19 PM 6:21 PM 7:30 PM
+31-Aug 4:45 AM 6:03 AM 12:12 PM 3:18 PM 6:20 PM 7:30 PM
+SEPTEMBER
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Sep 4:45 AM 6:03 AM 12:12 PM 3:17 PM 6:20 PM 7:29 PM
+2-Sep 4:45 AM 6:03 AM 12:12 PM 3:16 PM 6:19 PM 7:28 PM
+3-Sep 4:45 AM 6:03 AM 12:11 PM 3:15 PM 6:18 PM 7:28 PM
+4-Sep 4:45 AM 6:03 AM 12:11 PM 3:13 PM 6:18 PM 7:27 PM
+5-Sep 4:45 AM 6:03 AM 12:11 PM 3:12 PM 6:18 PM 7:27 PM
+6-Sep 4:45 AM 6:02 AM 12:10 PM 3:12 PM 6:17 PM 7:26 PM
+7-Sep 4:45 AM 6:02 AM 12:10 PM 3:12 PM 6:16 PM 7:26 PM
+8-Sep 4:45 AM 6:02 AM 12:10 PM 3:13 PM 6:16 PM 7:25 PM
+9-Sep 4:45 AM 6:02 AM 12:09 PM 3:13 PM 6:15 PM 7:24 PM
+10-Sep 4:45 AM 6:02 AM 12:09 PM 3:13 PM 6:15 PM 7:24 PM
+11-Sep 4:45 AM 6:02 AM 12:09 PM 3:13 PM 6:14 PM 7:23 PM
+12-Sep 4:45 AM 6:02 AM 12:08 PM 3:14 PM 6:14 PM 7:23 PM
+13-Sep 4:45 AM 6:01 AM 12:08 PM 3:14 PM 6:13 PM 7:22 PM
+14-Sep 4:44 AM 6:01 AM 12:07 PM 3:14 PM 6:13 PM 7:21 PM
+15-Sep 4:44 AM 6:01 AM 12:07 PM 3:14 PM 6:12 PM 7:21 PM
+16-Sep 4:44 AM 6:01 AM 12:07 PM 3:14 PM 6:12 PM 7:20 PM
+17-Sep 4:44 AM 6:01 AM 12:06 PM 3:15 PM 6:11 PM 7:20 PM
+18-Sep 4:44 AM 6:01 AM 12:06 PM 3:15 PM 6:10 PM 7:19 PM
+19-Sep 4:44 AM 6:00 AM 12:06 PM 3:15 PM 6:10 PM 7:18 PM
+20-Sep 4:44 AM 6:00 AM 12:05 PM 3:15 PM 6:09 PM 7:18 PM
+21-Sep 4:43 AM 6:00 AM 12:05 PM 3:15 PM 6:09 PM 7:17 PM
+22-Sep 4:43 AM 6:00 AM 12:04 PM 3:15 PM 6:08 PM 7:17 PM
+23-Sep 4:43 AM 6:00 AM 12:04 PM 3:16 PM 6:07 PM 7:16 PM
+24-Sep 4:43 AM 6:00 AM 12:04 PM 3:16 PM 6:07 PM 7:16 PM
+25-Sep 4:43 AM 6:00 AM 12:04 PM 3:16 PM 6:07 PM 7:15 PM
+26-Sep 4:43 AM 5:59 AM 12:03 PM 3:16 PM 6:06 PM 7:15 PM
+27-Sep 4:43 AM 5:59 AM 12:03 PM 3:16 PM 6:05 PM 7:14 PM
+28-Sep 4:43 AM 5:59 AM 12:03 PM 3:16 PM 6:05 PM 7:13 PM
+29-Sep 4:42 AM 5:59 AM 12:02 PM 3:16 PM 6:04 PM 7:13 PM
+30-Sep 4:42 AM 5:59 AM 12:02 PM 3:16 PM 6:04 PM 7:12 PM
+OCTOBER
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Oct 4:42 AM 5:59 AM 12:02 PM 3:16 PM 6:03 PM 7:12 PM
+2-Oct 4:42 AM 5:59 AM 12:01 PM 3:16 PM 6:03 PM 7:12 PM
+3-Oct 4:42 AM 5:58 AM 12:01 PM 3:16 PM 6:02 PM 7:11 PM
+4-Oct 4:42 AM 5:58 AM 12:01 PM 3:17 PM 6:02 PM 7:11 PM
+5-Oct 4:41 AM 5:58 AM 12:00 PM 3:16 PM 6:01 PM 7:10 PM
+6-Oct 4:41 AM 5:58 AM 12:00 PM 3:17 PM 6:01 PM 7:10 PM
+7-Oct 4:41 AM 5:58 AM 12:00 PM 3:16 PM 6:01 PM 7:09 PM
+8-Oct 4:41 AM 5:58 AM 11:59 AM 3:17 PM 6:00 PM 7:09 PM
+9-Oct 4:41 AM 5:58 AM 11:59 AM 3:17 PM 6:00 PM 7:08 PM
+10-Oct 4:41 AM 5:58 AM 11:59 AM 3:17 PM 5:59 PM 7:08 PM
+11-Oct 4:41 AM 5:58 AM 11:59 AM 3:17 PM 5:59 PM 7:08 PM
+12-Oct 4:41 AM 5:58 AM 11:58 AM 3:17 PM 5:58 PM 7:07 PM
+13-Oct 4:40 AM 5:57 AM 11:58 AM 3:16 PM 5:58 PM 7:07 PM
+14-Oct 4:40 AM 5:57 AM 11:58 AM 3:17 PM 5:58 PM 7:06 PM
+15-Oct 4:40 AM 5:57 AM 11:58 AM 3:17 PM 5:57 PM 7:06 PM
+16-Oct 4:40 AM 5:57 AM 11:58 AM 3:17 PM 5:57 PM 7:06 PM
+17-Oct 4:40 AM 5:57 AM 11:57 AM 3:17 PM 5:56 PM 7:05 PM
+18-Oct 4:40 AM 5:57 AM 11:57 AM 3:17 PM 5:56 PM 7:05 PM
+19-Oct 4:40 AM 5:57 AM 11:57 AM 3:17 PM 5:56 PM 7:05 PM
+20-Oct 4:40 AM 5:57 AM 11:57 AM 3:17 PM 5:55 PM 7:05 PM
+21-Oct 4:40 AM 5:57 AM 11:57 AM 3:16 PM 5:55 PM 7:04 PM
+22-Oct 4:40 AM 5:57 AM 11:56 AM 3:17 PM 5:54 PM 7:04 PM
+23-Oct 4:40 AM 5:57 AM 11:56 AM 3:17 PM 5:54 PM 7:04 PM
+24-Oct 4:40 AM 5:57 AM 11:56 AM 3:17 PM 5:54 PM 7:04 PM
+25-Oct 4:39 AM 5:57 AM 11:56 AM 3:17 PM 5:54 PM 7:03 PM
+26-Oct 4:39 AM 5:57 AM 11:56 AM 3:17 PM 5:53 PM 7:03 PM
+27-Oct 4:39 AM 5:58 AM 11:56 AM 3:17 PM 5:53 PM 7:03 PM
+28-Oct 4:39 AM 5:58 AM 11:56 AM 3:17 PM 5:53 PM 7:03 PM
+29-Oct 4:40 AM 5:58 AM 11:56 AM 3:17 PM 5:53 PM 7:03 PM
+30-Oct 4:39 AM 5:58 AM 11:56 AM 3:17 PM 5:52 PM 7:03 PM
+31-Oct 4:40 AM 5:58 AM 11:56 AM 3:17 PM 5:52 PM 7:02 PM
+NOVEMBER
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Nov 4:40 AM 5:58 AM 11:56 AM 3:17 PM 5:52 PM 7:03 PM
+2-Nov 4:39 AM 5:58 AM 11:56 AM 3:17 PM 5:52 PM 7:02 PM
+3-Nov 4:39 AM 5:58 AM 11:56 AM 3:17 PM 5:52 PM 7:02 PM
+4-Nov 4:40 AM 5:59 AM 11:56 AM 3:17 PM 5:51 PM 7:02 PM
+5-Nov 4:40 AM 5:59 AM 11:56 AM 3:17 PM 5:51 PM 7:02 PM
+6-Nov 4:40 AM 5:59 AM 11:56 AM 3:17 PM 5:51 PM 7:02 PM
+7-Nov 4:40 AM 5:59 AM 11:56 AM 3:17 PM 5:51 PM 7:02 PM
+8-Nov 4:40 AM 5:59 AM 11:56 AM 3:17 PM 5:51 PM 7:02 PM
+9-Nov 4:40 AM 6:00 AM 11:56 AM 3:18 PM 5:51 PM 7:02 PM
+10-Nov 4:40 AM 6:00 AM 11:56 AM 3:18 PM 5:51 PM 7:02 PM
+11-Nov 4:40 AM 6:00 AM 11:56 AM 3:18 PM 5:51 PM 7:02 PM
+12-Nov 4:40 AM 6:00 AM 11:56 AM 3:18 PM 5:51 PM 7:03 PM
+13-Nov 4:41 AM 6:01 AM 11:56 AM 3:18 PM 5:51 PM 7:03 PM
+14-Nov 4:41 AM 6:01 AM 11:56 AM 3:18 PM 5:51 PM 7:03 PM
+15-Nov 4:41 AM 6:01 AM 11:57 AM 3:18 PM 5:51 PM 7:03 PM
+16-Nov 4:41 AM 6:02 AM 11:57 AM 3:19 PM 5:51 PM 7:03 PM
+17-Nov 4:41 AM 6:02 AM 11:57 AM 3:19 PM 5:51 PM 7:03 PM
+18-Nov 4:42 AM 6:02 AM 11:57 AM 3:19 PM 5:51 PM 7:03 PM
+19-Nov 4:42 AM 6:03 AM 11:57 AM 3:19 PM 5:51 PM 7:04 PM
+20-Nov 4:42 AM 6:03 AM 11:58 AM 3:19 PM 5:51 PM 7:04 PM
+21-Nov 4:42 AM 6:03 AM 11:58 AM 3:20 PM 5:52 PM 7:04 PM
+22-Nov 4:43 AM 6:04 AM 11:58 AM 3:20 PM 5:52 PM 7:04 PM
+23-Nov 4:43 AM 6:04 AM 11:58 AM 3:20 PM 5:52 PM 7:05 PM
+24-Nov 4:43 AM 6:05 AM 11:59 AM 3:20 PM 5:52 PM 7:05 PM
+25-Nov 4:44 AM 6:05 AM 11:59 AM 3:21 PM 5:52 PM 7:05 PM
+26-Nov 4:44 AM 6:05 AM 11:59 AM 3:21 PM 5:52 PM 7:05 PM
+27-Nov 4:44 AM 6:06 AM 12:00 PM 3:21 PM 5:53 PM 7:06 PM
+28-Nov 4:44 AM 6:06 AM 12:00 PM 3:22 PM 5:53 PM 7:06 PM
+29-Nov 4:45 AM 6:06 AM 12:00 PM 3:22 PM 5:53 PM 7:07 PM
+30-Nov 4:45 AM 6:07 AM 12:01 PM 3:22 PM 5:53 PM 7:07 PM
+DECEMBER
+DATE FAJR SUNRISE LUHR ASR MAGRIB ISHA
+1-Dec 4:45 AM 6:07 AM 12:01 PM 3:23 PM 5:54 PM 7:07 PM
+2-Dec 4:46 AM 6:08 AM 12:01 PM 3:23 PM 5:54 PM 7:07 PM
+3-Dec 4:46 AM 6:08 AM 12:02 PM 3:23 PM 5:54 PM 7:08 PM
+4-Dec 4:47 AM 6:09 AM 12:02 PM 3:24 PM 5:55 PM 7:08 PM
+5-Dec 4:47 AM 6:09 AM 12:03 PM 3:24 PM 5:55 PM 7:09 PM
+6-Dec 4:47 AM 6:10 AM 12:03 PM 3:25 PM 5:56 PM 7:09 PM
+7-Dec 4:48 AM 6:10 AM 12:04 PM 3:25 PM 5:56 PM 7:10 PM
+8-Dec 4:48 AM 6:11 AM 12:04 PM 3:25 PM 5:56 PM 7:10 PM
+9-Dec 4:49 AM 6:11 AM 12:04 PM 3:26 PM 5:57 PM 7:11 PM
+10-Dec 4:49 AM 6:12 AM 12:05 PM 3:26 PM 5:57 PM 7:11 PM
+11-Dec 4:50 AM 6:12 AM 12:05 PM 3:27 PM 5:57 PM 7:11 PM
+12-Dec 4:50 AM 6:13 AM 12:06 PM 3:27 PM 5:58 PM 7:12 PM
+13-Dec 4:51 AM 6:13 AM 12:06 PM 3:28 PM 5:58 PM 7:12 PM
+14-Dec 4:51 AM 6:14 AM 12:07 PM 3:28 PM 5:59 PM 7:13 PM
+15-Dec 4:51 AM 6:14 AM 12:07 PM 3:29 PM 5:59 PM 7:13 PM
+16-Dec 4:52 AM 6:15 AM 12:08 PM 3:29 PM 5:59 PM 7:14 PM
+17-Dec 4:52 AM 6:15 AM 12:08 PM 3:30 PM 6:00 PM 7:14 PM
+18-Dec 4:53 AM 6:16 AM 12:09 PM 3:30 PM 6:01 PM 7:15 PM
+19-Dec 4:53 AM 6:16 AM 12:09 PM 3:31 PM 6:01 PM 7:15 PM
+20-Dec 4:54 AM 6:17 AM 12:10 PM 3:31 PM 6:01 PM 7:16 PM
+21-Dec 4:54 AM 6:17 AM 12:10 PM 3:32 PM 6:02 PM 7:16 PM
+22-Dec 4:55 AM 6:18 AM 12:11 PM 3:32 PM 6:02 PM 7:17 PM
+23-Dec 4:55 AM 6:18 AM 12:11 PM 3:32 PM 6:03 PM 7:17 PM
+24-Dec 4:56 AM 6:19 AM 12:12 PM 3:33 PM 6:03 PM 7:18 PM
+25-Dec 4:56 AM 6:19 AM 12:12 PM 3:34 PM 6:04 PM 7:18 PM
+26-Dec 4:57 AM 6:20 AM 12:13 PM 3:34 PM 6:05 PM 7:19 PM
+27-Dec 4:57 AM 6:20 AM 12:13 PM 3:35 PM 6:05 PM 7:19 PM
+28-Dec 4:58 AM 6:21 AM 12:14 PM 3:35 PM 6:05 PM 7:20 PM
+29-Dec 4:58 AM 6:21 AM 12:14 PM 3:35 PM 6:06 PM 7:20 PM
+30-Dec 4:59 AM 6:22 AM 12:15 PM 3:36 PM 6:07 PM 7:21 PM
+31-Dec 4:59 AM 6:22 AM 12:15 PM 3:36 PM 6:07 PM 7:21 PM
+`;
+    </script>
+
+    <!-- Placeholder for App Logic -->
+    <script>
+        // DOM Elements
+        const monthSelect = document.getElementById('month-select');
+        const dateSelect = document.getElementById('date-select');
+        const districtSelect = document.getElementById('district-select');
+
+        // Main Content Sections
+        const mainContent = document.getElementById('main-content');
+        const nextPrayerNameEl = document.getElementById('next-prayer-name');
+        const countdownEl = document.getElementById('countdown');
+        const dateDisplayEl = document.getElementById('date-display');
+
+        // Settings Elements
+        const settingsModal = document.getElementById('settings-modal');
+        const openSettingsBtn = document.getElementById('open-settings');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const saveSettingsBtn = document.getElementById('save-settings');
+
+        // State
+        let selectedMonth = null;
+        let selectedDate = null;
+        let selectedDistrict = null;
+        let currentLocation = null; // Will be set from district selection
+        let currentDayTimes = null; // Store today's times for alert
+
+        // Zone Coordinates - Strictly from PDF Zones 01-13
+        const SRI_LANKA_ZONES = {
+            zone01: { lat: 6.9271, lng: 79.8612, name: "Colombo / Gampaha / Kalutara" },
+            zone02: { lat: 9.6615, lng: 80.0255, name: "Jaffna / Nallur" },
+            zone03: { lat: 9.2671, lng: 80.8142, name: "Mullaitivu / Kilinochchi / Vavuniya" },
+            zone04: { lat: 8.9810, lng: 79.9044, name: "Mannar / Puttalam" },
+            zone05: { lat: 8.3114, lng: 80.4037, name: "Anuradhapura / Polonnaruwa" },
+            zone06: { lat: 7.4818, lng: 80.3609, name: "Kurunegala" },
+            zone07: { lat: 7.2906, lng: 80.6337, name: "Kandy / Matale / Nuwara Eliya" },
+            zone08: { lat: 7.7310, lng: 81.6747, name: "Batticaloa / Ampara" },
+            zone09: { lat: 8.5874, lng: 81.2152, name: "Trincomalee" },
+            zone10: { lat: 6.9934, lng: 81.0550, name: "Badulla / Monaragala" },
+            zone11: { lat: 6.6939, lng: 80.3982, name: "Ratnapura / Kegalle" },
+            zone12: { lat: 6.0535, lng: 80.2210, name: "Galle / Matara" },
+            zone13: { lat: 6.1429, lng: 81.1212, name: "Hambantota" }
+        };
+
+        // Static Data Cache
+        let PARSED_STATIC_DATA = {};
+
+        function parseStaticData() {
+            if (typeof RAW_PRAYER_DATA === 'undefined') return;
+
+            const lines = RAW_PRAYER_DATA.split(/\r?\n/);
+            let currentMonth = null;
+
+            // Map month names to index (0-11)
+            const monthMap = {
+                'January': 0, 'Jan': 0,
+                'February': 1, 'Feb': 1,
+                'March': 2, 'Mar': 2,
+                'April': 3, 'Apr': 3,
+                'May': 4,
+                'June': 5, 'Jun': 5,
+                'July': 6, 'Jul': 6,
+                'August': 7, 'Aug': 7,
+                'September': 8, 'Sep': 8, 'Sept': 8,
+                'October': 9, 'Oct': 9,
+                'November': 10, 'Nov': 10,
+                'December': 11, 'Dec': 11
+            };
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                // Detect Month Headers
+                for (const m of Object.keys(monthMap)) {
+                    if (line.toUpperCase() === m.toUpperCase()) {
+                        currentMonth = monthMap[m];
+                        if (!PARSED_STATIC_DATA[currentMonth]) PARSED_STATIC_DATA[currentMonth] = {};
+                        return;
+                    }
+                }
+
+                // Parse Data Rows: "1-Jan 4:54 AM..."
+                // Regex: Date Time Time Time Time Time Time
+                const match = line.match(/^(\d+)-([A-Za-z]+)\s+([\d:]+\s+[AP]M)\s+([\d:]+\s+[AP]M)\s+([\d:]+\s+[AP]M)\s+([\d:]+\s+[AP]M)\s+([\d:]+\s+[AP]M)\s+([\d:]+\s+[AP]M)/);
+
+                if (match) {
+                    const day = parseInt(match[1]);
+                    const monthStr = match[2];
+                    let rowMonthIndex = monthMap[monthStr];
+                    if (rowMonthIndex === undefined) rowMonthIndex = currentMonth;
+
+                    if (rowMonthIndex !== null && rowMonthIndex !== undefined) {
+                        if (!PARSED_STATIC_DATA[rowMonthIndex]) PARSED_STATIC_DATA[rowMonthIndex] = {};
+
+                        PARSED_STATIC_DATA[rowMonthIndex][day] = {
+                            fajr: match[3],
+                            sunrise: match[4],
+                            luhr: match[5],
+                            asr: match[6],
+                            magrib: match[7],
+                            isha: match[8]
+                        };
+                    }
+                }
+            });
+            console.log("Static Data Parsed:", PARSED_STATIC_DATA);
+        }
+
+        // Initialization
+        function init() {
+            // Parse the PDF data first
+            parseStaticData();
+
+            populateMonths();
+            populateDistricts();
+
+            // Add Event Listeners
+            monthSelect.addEventListener('change', onMonthChange);
+            dateSelect.addEventListener('change', onDateChange);
+            districtSelect.addEventListener('change', onDistrictChange);
+
+            // Default visibility
+            mainContent.style.display = 'none';
+
+            // Settings Modal Listeners
+            if (openSettingsBtn) openSettingsBtn.addEventListener('click', () => settingsModal.classList.add('open'));
+            if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('open'));
+            if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', () => {
+                settingsModal.classList.remove('open');
+            });
+
+            // Auto-select defaults
+            const today = new Date();
+            const currentMonthIndex = today.getMonth(); // 0-11
+
+            // Default to February (1) if not in Feb or Mar (2)
+            let targetMonth = 1;
+            if (currentMonthIndex === 1 || currentMonthIndex === 2) {
+                targetMonth = currentMonthIndex;
+            }
+
+            // Set Month
+            monthSelect.value = targetMonth;
+            onMonthChange(); // Trigger date population
+
+            // Set Date
+            if (currentMonthIndex === targetMonth) {
+                dateSelect.value = today.getDate();
+            } else {
+                dateSelect.value = 1; // Default to 1st if not current month
+            }
+            onDateChange(); // Enable district
+
+            // Set District (Fixed to Zone 01)
+            districtSelect.value = "zone01";
+            onDistrictChange(); // Show data
+        }
+
+        function populateMonths() {
+            // Only February and March
+            const allowedMonths = [
+                { name: "February", value: 1 },
+                { name: "March", value: 2 }
+            ];
+
+            monthSelect.innerHTML = ''; // Clear default
+            allowedMonths.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.value;
+                option.textContent = m.name;
+                monthSelect.appendChild(option);
+            });
+        }
+
+        function populateDistricts() {
+            districtSelect.innerHTML = ''; // Clear default
+            // Only Zone 01
+            const zoneKey = "zone01";
+            const data = SRI_LANKA_ZONES[zoneKey];
+
+            const option = document.createElement('option');
+            option.value = zoneKey;
+            option.textContent = data.name;
+            districtSelect.appendChild(option);
+        }
+
+        function onMonthChange() {
+            selectedMonth = parseInt(monthSelect.value);
+
+            // Reset subsequent selections
+            dateSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
+            dateSelect.disabled = false;
+            districtSelect.value = "";
+            districtSelect.disabled = true;
+            mainContent.style.display = 'none';
+
+            const year = new Date().getFullYear();
+            const daysInMonth = new Date(year, selectedMonth + 1, 0).getDate();
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                dateSelect.appendChild(option);
+            }
+        }
+
+        function onDateChange() {
+            selectedDate = parseInt(dateSelect.value);
+            districtSelect.disabled = false;
+
+            // If district was already selected (re-selection scenario), update times
+            if (districtSelect.value) {
+                onDistrictChange();
+            }
+        }
+
+        function onDistrictChange() {
+            const zoneKey = districtSelect.value;
+            if (!zoneKey) return;
+
+            selectedDistrict = zoneKey;
+            currentLocation = SRI_LANKA_ZONES[zoneKey];
+
+            updatePrayerTimes();
+            mainContent.style.display = 'block';
+        }
+
+        function updatePrayerTimes() {
+            if (typeof adhan === 'undefined') {
+                console.error("Adhan library not loaded");
+                return;
+            }
+
+            const year = new Date().getFullYear();
+            const date = new Date(year, selectedMonth, selectedDate);
+
+            // Calculate fallback times
+            let params = adhan.CalculationMethod.Karachi();
+            params.madhab = adhan.Madhab.Shafi;
+            const coordinates = new adhan.Coordinates(currentLocation.lat, currentLocation.lng);
+            const prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
+
+            // Update DOM
+            const listDateEl = document.getElementById('list-date-display');
+            const dateOptionsList = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            if (listDateEl) listDateEl.textContent = date.toLocaleDateString('en-GB', dateOptionsList);
+
+            // Check Static Data first
+            let times = null;
+            if (PARSED_STATIC_DATA[selectedMonth] && PARSED_STATIC_DATA[selectedMonth][selectedDate]) {
+                times = PARSED_STATIC_DATA[selectedMonth][selectedDate];
+                // console.log("Using Static Data for", date);
+            } else {
+                // Fallback to calculation
+                // console.log("Using Calculation (No Static Data)");
+                times = {
+                    fajr: formatTime(prayerTimes.fajr),
+                    sunrise: formatTime(prayerTimes.sunrise),
+                    luhr: formatTime(prayerTimes.dhuhr),
+                    asr: formatTime(prayerTimes.asr),
+                    magrib: formatTime(prayerTimes.maghrib),
+                    isha: formatTime(prayerTimes.isha)
+                };
+            }
+
+            // Update Global State for Azan Check
+            const today = new Date();
+            const isToday = (today.getDate() === selectedDate && today.getMonth() === selectedMonth && today.getFullYear() === year);
+            if (isToday) {
+                currentDayTimes = times;
+            } else {
+                currentDayTimes = null;
+            }
+
+            updatePrayerCard('Fajr', times.fajr);
+            updatePrayerCard('Sunrise', times.sunrise);
+            updatePrayerCard('Luhr', times.luhr);
+            updatePrayerCard('Asr', times.asr);
+            updatePrayerCard('Magrib', times.magrib);
+            updatePrayerCard('Isha', times.isha);
+
+            // Date Display
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateDisplayEl.textContent = date.toLocaleDateString('en-GB', dateOptions);
+
+            // Hijri Display
+            const hijriContainer = document.getElementById('hijri-display');
+            if (hijriContainer) {
+                hijriContainer.innerHTML = getHijriHTML(date);
+            }
+
+            // Next Prayer / Countdown
+            if (isToday && times) {
+                // Use Static Data for Next Prayer
+                const nextPrayer = getNextPrayerStatic(times, date);
+
+                if (nextPrayer) {
+                    nextPrayerNameEl.textContent = nextPrayer.name;
+                    startCountdown(nextPrayer.time);
+                } else {
+                    nextPrayerNameEl.textContent = "Isha Done";
+                    countdownEl.textContent = "--:--:--";
+                    stopCountdown();
+                }
+            } else {
+                // Not today or no data
+                nextPrayerNameEl.textContent = isToday ? "Loading..." : "Future/Past Date";
+                countdownEl.textContent = "";
+                stopCountdown();
+            }
+        }
+
+        function getNextPrayerStatic(times, dateBase) {
+            const now = new Date();
+            const prayerOrder = ['fajr', 'sunrise', 'luhr', 'asr', 'magrib', 'isha'];
+            const displayNames = {
+                'fajr': 'Fajr', 'sunrise': 'Sunrise', 'luhr': 'Luhr',
+                'asr': 'Asr', 'magrib': 'Magrib', 'isha': 'Isha'
+            };
+
+            for (const p of prayerOrder) {
+                const timeStr = times[p];
+                if (!timeStr) continue;
+
+                const pDate = parseTimeString(timeStr, dateBase);
+                if (pDate > now) {
+                    return { name: displayNames[p], time: pDate };
+                }
+            }
+
+            // All passed? Return null (Isha done) 
+            // OR ideally check tomorrow's Fajr, but for now just show completed
+            return null;
+        }
+
+        function parseTimeString(timeStr, dateBase) {
+            // Expects "5:10 AM"
+            const parts = timeStr.match(/(\d+):(\d+)\s+([AP]M)/);
+            if (!parts) return new Date(dateBase.getTime()); // Fallback
+
+            let hours = parseInt(parts[1]);
+            const minutes = parseInt(parts[2]);
+            const period = parts[3];
+
+            if (period === 'PM' && hours !== 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+
+            const d = new Date(dateBase);
+            d.setHours(hours, minutes, 0, 0);
+            return d;
+        }
+
+        function updatePrayerCard(name, time) {
+            // Helper to find card by name text
+            const cards = document.querySelectorAll('.prayer-card');
+            cards.forEach(card => {
+                const titleEl = card.querySelector('.prayer-name');
+                if (titleEl && titleEl.textContent === name) {
+                    // Time can be string (Static) or Date object (Calc)
+                    let displayTime = time;
+                    if (time instanceof Date) {
+                        displayTime = formatTime(time);
+                    }
+                    card.querySelector('.prayer-time').textContent = displayTime;
+                }
+            });
+        }
+
+
+        function getHijriHTML(date) {
+            // Anchor: Feb 19, 2026
+            // SL: Feb 19 = Ramadan 1
+            // Makkah: Feb 19 = Ramadan 2
+
+            // Create anchor date (Feb 19, 2026) at midnight
+            const anchor = new Date(2026, 1, 19); // Month is 0-indexed (1 = Feb)
+            anchor.setHours(0, 0, 0, 0);
+
+            // Clone input date to avoid mutation and set to midnight
+            const target = new Date(date);
+            target.setHours(0, 0, 0, 0);
+
+            // valid calculation?
+            const diffTime = target - anchor;
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            const slDay = 1 + diffDays;
+            const makkahDay = 2 + diffDays;
+
+            return `
+        <div class="hijri-row">
+            <span class="hijri-icon">🇱🇰</span>
+            <span class="hijri-text">${formatHijriText(slDay)}</span>
+        </div>
+        <div class="hijri-row">
+            <span class="hijri-icon">🕋</span>
+            <span class="hijri-text">${formatHijriText(makkahDay)}</span>
+        </div>
+    `;
+        }
+
+        function formatHijriText(day) {
+            if (day > 0 && day <= 30) {
+                return `Ramadan ${day}`;
+            } else if (day <= 0) {
+                // Simple fallback for pre-Ramadan
+                return `Shaban ${30 + day}`;
+            } else {
+                // Post Ramadan
+                return `Shawwal ${day - 30}`;
+            }
+        }
+
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+
+        let countdownInterval;
+
+        function startCountdown(targetTime) {
+            stopCountdown();
+
+            function tick() {
+                const now = new Date();
+                const diff = targetTime - now;
+
+                if (diff <= 0) {
+                    stopCountdown();
+                    // In a real app, we'd trigger a refresh or 'Now It's Time'
+                    return;
+                }
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                countdownEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            tick();
+            countdownInterval = setInterval(tick, 1000);
+        }
+
+        function stopCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+        }
+
+
+        // Azan Checker Loop
+        setInterval(() => {
+            const alertEl = document.getElementById('azan-alert');
+            if (!currentDayTimes || !alertEl) return;
+
+            const now = new Date();
+            // Helper to format current time exactly like our data: "5:10 PM"
+            // Note: Use 'en-US' to ensure AM/PM matching if system locale is different, 
+            // but our manual formatTime uses specific options. Let's replicate that.
+            const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+
+            // Normalize string (remove leading zero if single digit hour, e.g. "5:10 PM" matches data "5:10 PM")
+            // Data might be "05:10 PM" or "5:10 PM". Our data seems to be "5:10 AM".
+            // Let's ensure strict match or flexible match.
+            // The previous formatTime output 2-digit hours "05:10 AM".
+            // Let's create a comparator.
+
+            const currentFormatted = formatTime(now); // "05:10 AM"
+
+            // Check all prayers
+            const prayers = ['fajr', 'sunrise', 'luhr', 'asr', 'magrib', 'isha'];
+            let isAzanTime = false;
+
+            for (const p of prayers) {
+                const pTime = currentDayTimes[p]; // e.g., "5:10 AM"
+                if (!pTime) continue;
+
+                // Compare logic
+                // pTime might be "5:10 AM", currentFormatted is "05:10 AM". 
+                // We should normalize both to be safe.
+                if (normalizeTime(pTime) === normalizeTime(currentFormatted)) {
+                    isAzanTime = true;
+                    break;
+                }
+            }
+
+            if (isAzanTime) {
+                alertEl.classList.add('active');
+            } else {
+                alertEl.classList.remove('active');
+            }
+        }, 1000);
+
+        function normalizeTime(t) {
+            // Converts "05:10 AM" -> "5:10 AM", "5:10 AM" -> "5:10 AM"
+            // Just remove leading zero from hour if present
+            if (!t) return '';
+            return t.replace(/^0/, '');
+        }
+
+
+        // Start
+        init();
+    </script>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

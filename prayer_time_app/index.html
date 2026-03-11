@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prayer Times</title>
+    <meta name="description" content="International Standard Prayer Times App">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- App Header -->
+        <header class="app-header">
+            <h1 class="district-title">SRILANKA PRAYER TIMES <br> <span class="subtitle" id="dynamic-district-subtitle">District Prayer
+                    Times</span></h1>
+        </header>
+
+        <!-- Marquee (Hidden initially) -->
+        <div id="azan-marquee-container" style="display: none; background: #eab308; color: #000; padding: 10px 0; font-weight: bold; font-size: 1.2rem; text-align: center;">
+            <marquee id="azan-marquee-text" scrollamount="8">Ready for Salaha. Prepare for Victory.</marquee>
+        </div>
+
+        <!-- Selection Bar -->
+        <div class="selection-bar">
+            <div class="select-group">
+                <label for="month-select">Month</label>
+                <select id="month-select" class="form-select">
+                    <option value="" disabled selected>Select Month</option>
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="date-select">Date</label>
+                <select id="date-select" class="form-select" disabled>
+                    <option value="" disabled selected>Select Date</option>
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="district-select">District</label>
+                <select id="district-select" class="form-select" disabled>
+                    <option value="" disabled selected>Select District</option>
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Content (Hidden initially) -->
+        <div id="main-content" style="display: none;">
+            <!-- Hero Section (Visible for Countdown) -->
+            <div class="hero-section">
+                <div id="date-display" class="date-display">--</div>
+
+                <!-- Dual Hijri Display -->
+                <div id="hijri-display" class="hijri-date-container"></div>
+
+                <div class="next-prayer-label">Next Prayer</div>
+                <h1 class="next-prayer-name" id="next-prayer-name">--</h1>
+                <div class="countdown-timer" id="countdown">--:--:--</div>
+            </div>
+
+            <!-- Prayer List -->
+            <div class="prayer-list" id="prayer-list">
+                <!-- Date Row -->
+                <div class="prayer-card date-card">
+                    <span class="prayer-name">Date</span>
+                    <span class="prayer-time" id="list-date-display">--</span>
+                </div>
+
+                <!-- Items -->
+                <div class="prayer-card">
+                    <span class="prayer-name">Fajr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Sunrise</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Luhr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Asr</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Magrib</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+                <div class="prayer-card">
+                    <span class="prayer-name">Isha</span>
+                    <span class="prayer-time">--:--</span>
+                </div>
+            </div>
+
+            <!-- Footer Credit -->
+            <div style="text-align: center; margin-top: 20px; padding-bottom: 20px; color: var(--text-color); font-size: 0.9rem; opacity: 0.8;">
+                Developed and Designed by <strong>ARM INAS</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button class="close-btn" id="close-settings">&times;</button>
+            </div>
+
+            <!-- Calculation Method hidden/fixed to Sri Lanka Standard -->
+            <div class="form-group" style="display:none;">
+                <label class="form-label" for="method-select">Calculation Method</label>
+                <select id="method-select" class="form-select">
+                    <option value="Karachi" selected>Sri Lanka Standard</option>
+                </select>
+            </div>
+
+            <!-- Madhab hidden/fixed to Sri Lanka Standard (Shafi) -->
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label class="form-label" for="manual-sl-hijri">SL Hijri Date (Manual after Mar 20)</label>
+                <input type="text" id="manual-sl-hijri" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 0.75rem; border-radius: 8px; width: 100%; box-sizing: border-box;" placeholder="e.g. Shawwal 1">
+            </div>
+            <div class="form-group" style="margin-top: 15px; margin-bottom: 20px;">
+                <label class="form-label" for="manual-makkah-hijri">Makkah Hijri Date (Manual after Mar 20)</label>
+                <input type="text" id="manual-makkah-hijri" style="background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); padding: 0.75rem; border-radius: 8px; width: 100%; box-sizing: border-box;" placeholder="e.g. Shawwal 2">
+            </div>
+
+            <button class="btn-primary" id="save-settings">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Adhan Library -->
+    <!-- Adhan Library -->
+    <!-- Adhan Library -->
+    <script src="adhan.js"></script>
+    <!-- Static Data -->
+    <script src="prayer_static_data.js"></script>
+    <script src="kandy_prayer_data.js"></script>
+    <script src="kurunegala_prayer_data.js"></script>
+    <script src="batticaloa_prayer_data.js"></script>
+    <script src="mannar_prayer_data.js"></script>
+    <script src="anuradhapura_prayer_data.js"></script>
+    <script src="badulla_prayer_data.js"></script>
+    <script src="ratnapura_prayer_data.js"></script>
+    <script src="hambantota_prayer_data.js"></script>
+    <script src="galle_matara_prayer_data.js"></script>
+    <script src="jaffna_prayer_data.js"></script>
+    <script src="zone03_prayer_data.js"></script>
+    <script src="trincomalee_prayer_data.js"></script>
+    <!-- App Logic -->
+    <script src="script.js"></script>
+    <!-- App Logic -->
+    <script src="script.js"></script>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>
